@@ -1,5 +1,6 @@
 import * as esbuild from 'esbuild-wasm';
 import { useEffect, useRef, useState } from 'react';
+import { counterComponent } from './CodeEditor';
 
 async function transpileCode(code: string) {
 	try {
@@ -16,7 +17,6 @@ async function transpileCode(code: string) {
 		loader: 'jsx',
 		target: 'es2015',
 	});
-	console.log(result.code)
 
 	return result.code;
 }
@@ -36,22 +36,23 @@ const boilerplate = `
 
 type LivePreviewProps = {
 	code: string
+	packages: string[]
 }
 
-export function LivePreview({code} : LivePreviewProps) {
+export function LivePreview({code, packages} : LivePreviewProps) {
 	// todo use this error state to either display the error or the iframe
 	const [error, setError] = useState<string|null>(null)
 	const iframeRef = useRef<HTMLIFrameElement>(null);
 	const [iframeSrcDoc, setIframeSrcDoc] = useState(boilerplate);
 
+	console.log("packages:", packages)
+
 	useEffect(() => {
-		console.log("update previrewe")
 		const updatePreview = async () => {
 			try {
 				const updated = await transpileCode(code);
 				setError(null)
 				if (iframeRef.current) {
-					console.log("updating iframe")
 					setIframeSrcDoc(boilerplate.replace('%{code}%', updated))
 				}
 			} catch (e) {
