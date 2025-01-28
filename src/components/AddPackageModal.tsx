@@ -7,6 +7,11 @@ interface AddPackageModalProps {
 	onAdd: (name: string, version: string) => void
 }
 
+export type Package = {
+  name: string;
+  version: string;
+}
+
 export const AddPackageModal: React.FC<AddPackageModalProps> = ({ isOpen, onClose, onAdd }) => {
   const [packageName, setPackageName] = useState("")
   const [packageVersion, setPackageVersion] = useState("")

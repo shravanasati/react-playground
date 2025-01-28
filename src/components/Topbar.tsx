@@ -1,9 +1,9 @@
 import type React from "react"
 import { useState } from "react"
-import {AddPackageModal} from "./AddPackageModal"
+import {AddPackageModal, Package} from "./AddPackageModal"
 
 type TopbarProps = {
-	setPackages: React.Dispatch<React.SetStateAction<string[]>>
+	setPackages: React.Dispatch<React.SetStateAction<Package[]>>
 }
 
 export const Topbar: React.FC<TopbarProps> = ({setPackages}) => {
@@ -12,7 +12,7 @@ export const Topbar: React.FC<TopbarProps> = ({setPackages}) => {
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
 	const addPackage = (name: string, version: string) => {
-		setPackages((prev) => [...prev, `${name}@${version}`])
+		setPackages((prev) => [...prev, {name: name, version: version}])
 	}
 
   return (

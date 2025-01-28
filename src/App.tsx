@@ -3,10 +3,11 @@ import './App.css'
 import { CodeEditor } from './components/CodeEditor'
 import { LivePreview } from './components/LivePreview'
 import { Topbar } from './components/Topbar'
+import { type Package } from './components/AddPackageModal'
 
 function App() {
   const [code, setCode] = useState("")
-  const [packages, setPackages] = useState<string[]>([])
+  const [packages, setPackages] = useState<Package[]>([])
 
   return (
     <main>
