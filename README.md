@@ -4,6 +4,8 @@ This is a live preview enabled react playground that allows you to write react c
 
 It also supports using external NPM packages usign the "Add Packages" button at the topbar. All packages added are imported under the package name namespace.
 
+![add package demo](add_package.png)
+
 For example, if I add lodash using the button, I can use it as follows:
 
 ```js
