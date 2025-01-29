@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import './App.css'
-import { CodeEditor } from './components/CodeEditor'
+import { CodeEditor, counterComponent } from './components/CodeEditor'
 import { LivePreview } from './components/LivePreview'
 import { Topbar } from './components/Topbar'
 import { type Package } from './components/AddPackageModal'
 
 function App() {
-  const [code, setCode] = useState("")
+  const [code, setCode] = useState(counterComponent)
   const [packages, setPackages] = useState<Package[]>([])
 
   return (

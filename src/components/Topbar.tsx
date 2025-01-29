@@ -17,12 +17,12 @@ export const Topbar: React.FC<TopbarProps> = ({setPackages}) => {
 
   return (
     <div className="flex justify-between items-center px-5 py-3 bg-gray-900 border-b border-gray-700">
-      <h1 className="text-xl font-semibold text-gray-100">React Playground</h1>
+      <h1 className="text-xl font-semibold text-gray-100">react playground</h1>
       <button
         onClick={openModal}
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
       >
-        Add Package
+        add package
       </button>
       <AddPackageModal isOpen={isModalOpen} onClose={closeModal} onAdd={addPackage} />
     </div>

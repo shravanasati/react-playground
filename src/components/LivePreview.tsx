@@ -39,8 +39,7 @@ const skypackPathPlugin = () => ({
 	},
 });
 
-
-async function transpileCode(code: string) {
+async function initializeESBuild() {
 	try {
 		await esbuild.initialize({ wasmURL: 'https://unpkg.com/esbuild-wasm/esbuild.wasm' });
 	} catch (e) {
@@ -48,6 +47,10 @@ async function transpileCode(code: string) {
 			console.error(e)
 		}
 	}
+}
+
+async function transpileCode(code: string) {
+	await initializeESBuild()
 	code += `ReactDOM.render(<App />, document.getElementById('root'));`
 
 	const result = await esbuild.build({
@@ -67,7 +70,7 @@ async function transpileCode(code: string) {
 const boilerplate = `
   <html>
     <body>
-      <div id="root"></div>
+      <div id="root">edit the code once to initialize live preview</div>
       <script type="module">
 				import React from 'https://cdn.skypack.dev/react';
         import ReactDOM from 'https://cdn.skypack.dev/react-dom';
@@ -89,20 +92,21 @@ export function LivePreview({ code, packages }: LivePreviewProps) {
 	const [iframeSrcDoc, setIframeSrcDoc] = useState(boilerplate);
 	// console.log(packages)
 
-	useEffect(() => {
-		const updatePreview = async () => {
-			try {
-				const updated = await transpileCode(`${generateImports(packages)}\n${code}`);
-				setError(null)
-				if (iframeRef.current) {
-					setIframeSrcDoc(boilerplate.replace('%{code}%', updated))
-				}
-			} catch (e) {
-				console.error(e)
-				setError(String(e))
+	const updatePreview = async (code: string, packages: Package[]) => {
+		try {
+			const updated = await transpileCode(`${generateImports(packages)}\n${code}`);
+			setError(null)
+			if (iframeRef.current) {
+				setIframeSrcDoc(boilerplate.replace('%{code}%', updated))
 			}
-		};
-		updatePreview()
+		} catch (e) {
+			console.error(e)
+			setError(String(e))
+		}
+	};
+
+	useEffect(() => {
+		updatePreview(code, packages)
 	}, [code, packages])
 
 	return (
