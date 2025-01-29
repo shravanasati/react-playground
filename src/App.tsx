@@ -8,14 +8,16 @@ import { type Package } from './components/AddPackageModal'
 function App() {
   const [code, setCode] = useState(counterComponent)
   const [packages, setPackages] = useState<Package[]>([])
+  const [tailwindMode, setTailwindMode] = useState(false)
+  const toggleTailwindMode = () => setTailwindMode((prev) => !prev)
 
   return (
     <main>
-    <Topbar setPackages={setPackages  } />
-    <div className="flex">
-      <CodeEditor code={code} setCode={setCode} />
-      <LivePreview code={code} packages={packages} />
-    </div>
+      <Topbar tailwindMode={tailwindMode} setPackages={setPackages} toggleTailwindMode={toggleTailwindMode} />
+      <div className="flex">
+        <CodeEditor code={code} setCode={setCode} />
+        <LivePreview tailwindMode={tailwindMode} code={code} packages={packages}  />
+      </div>
     </main>
   )
 }

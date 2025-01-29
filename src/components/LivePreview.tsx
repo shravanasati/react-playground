@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild-wasm';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Package } from './AddPackageModal';
 
 function generateImports(packages: Package[]) {
@@ -67,47 +67,55 @@ async function transpileCode(code: string) {
 	return result.outputFiles?.[0].text;
 }
 
-const boilerplate = `
-  <html>
-    <body>
-      <div id="root">edit the code once to initialize live preview</div>
-      <script type="module">
-				import React from 'https://cdn.skypack.dev/react';
-        import ReactDOM from 'https://cdn.skypack.dev/react-dom';
-        ${'%{code}%'}
-      </script>
-    </body>
-  </html>
-`
+function getBoilerplate(code: string = "", tailwindMode: boolean = false) {
+	const boilerplate = `
+		<html>
+			<head>
+				<title>Live Preview</title>
+				${tailwindMode ? `<script src="https://cdn.twind.style" async crossorigin></script>` : ``}
+			</head>
+			<body>
+				<div id="root">edit the code once to initialize live preview</div>
+				<script type="module">
+					import React from 'https://cdn.skypack.dev/react';
+					import ReactDOM from 'https://cdn.skypack.dev/react-dom';
+					${code}
+				</script>
+			</body>
+		</html>
+	`
+	return boilerplate
+}
 
 type LivePreviewProps = {
 	code: string
 	packages: Package[]
+	tailwindMode: boolean
 }
 
-export function LivePreview({ code, packages }: LivePreviewProps) {
+export function LivePreview({ code, packages, tailwindMode }: LivePreviewProps) {
 	// todo use this error state to either display the error or the iframe
 	const [error, setError] = useState<string | null>(null)
 	const iframeRef = useRef<HTMLIFrameElement>(null);
-	const [iframeSrcDoc, setIframeSrcDoc] = useState(boilerplate);
+	const [iframeSrcDoc, setIframeSrcDoc] = useState(getBoilerplate());
 	// console.log(packages)
 
-	const updatePreview = async (code: string, packages: Package[]) => {
+	const updatePreview = useCallback(async (code: string, packages: Package[]) => {
 		try {
 			const updated = await transpileCode(`${generateImports(packages)}\n${code}`);
 			setError(null)
 			if (iframeRef.current) {
-				setIframeSrcDoc(boilerplate.replace('%{code}%', updated))
+				setIframeSrcDoc(getBoilerplate(updated, tailwindMode))
 			}
 		} catch (e) {
 			console.error(e)
 			setError(String(e))
 		}
-	};
+	}, [tailwindMode]);
 
 	useEffect(() => {
 		updatePreview(code, packages)
-	}, [code, packages])
+	}, [code, packages, tailwindMode, updatePreview])
 
 	return (
 		<div className="p-2 w-full">
