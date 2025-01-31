@@ -69,20 +69,17 @@ async function transpileCode(code: string) {
 
 function getBoilerplate(code: string = "", tailwindMode: boolean = false) {
 	const boilerplate = `
-		<html>
-			<head>
-				<title>Live Preview</title>
-				${tailwindMode ? `<script src="https://cdn.twind.style" async crossorigin></script>` : ``}
-			</head>
-			<body>
-				<div id="root">edit the code once to initialize live preview</div>
-				<script type="module">
-					import React from 'https://cdn.skypack.dev/react';
-					import ReactDOM from 'https://cdn.skypack.dev/react-dom';
-					${code}
-				</script>
-			</body>
-		</html>
+	<html>
+		<body>
+		<div id="root">edit the code once to initialize live preview</div>
+		<script type="module">
+			import React from 'https://cdn.skypack.dev/react';
+			import ReactDOM from 'https://cdn.skypack.dev/react-dom';
+			${code}
+		</script>
+		${tailwindMode ? `<script src="https://cdn.twind.style" async crossorigin="anonymous"></script>` : ``}
+		</body>
+	</html>
 	`
 	return boilerplate
 }
@@ -128,7 +125,7 @@ export function LivePreview({ code, packages, tailwindMode }: LivePreviewProps) 
 					srcDoc={iframeSrcDoc}
 					ref={iframeRef}
 					title="live-preview"
-					sandbox='allow-scripts'
+					sandbox='allow-scripts allow-same-origin'
 					className="w-full h-full my-1"
 				/>
 			}
