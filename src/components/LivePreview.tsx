@@ -41,7 +41,7 @@ const skypackPathPlugin = () => ({
 
 async function initializeESBuild() {
 	try {
-		await esbuild.initialize({ wasmURL: 'https://unpkg.com/esbuild-wasm/esbuild.wasm' });
+		await esbuild.initialize({ wasmURL: 'https://unpkg.com/esbuild-wasm@0.25.4/esbuild.wasm' });
 	} catch (e) {
 		if (!(e as Error).message.includes("more than once")) {
 			console.error(e)
